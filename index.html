@@ -48,8 +48,8 @@ nav.scrolled{background:rgba(13,26,13,.95);backdrop-filter:blur(14px);border-bot
 .counter-label{font-size:.62rem;letter-spacing:.12em;color:#ffffff;margin-top:.25rem;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.8)}
 .btn-primary{display:inline-block;padding:.85rem 2.5rem;background:rgba(212,170,74,.18);border:2px solid #f5c842;color:#ffffff;font-size:.82rem;font-weight:600;letter-spacing:.14em;text-decoration:none;border-radius:2px;transition:all .25s;cursor:pointer}
 .btn-primary:hover{background:var(--gold);color:var(--bg)}
-.sec-banner{width:100%;position:relative;overflow:hidden;max-height:280px}
-.sec-banner img{width:100%;display:block;object-fit:cover;object-position:center 40%}
+.sec-banner{width:100%;position:relative;overflow:hidden}
+.sec-banner img{width:100%;height:auto;display:block}
 .sec-banner-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,26,13,0) 0%,rgba(13,26,13,.8) 100%)}
 .sec-body{padding:50px 5% 70px}
 .sec-bg-authors{background:linear-gradient(180deg,#0a160a 0%,#111f11 100%)}
@@ -766,53 +766,91 @@ function animBars(bars){let t=0;function f(){t++;if(t%3===0)bars.forEach(b=>{con
 const obs=new IntersectionObserver((e)=>{e.forEach((en,i)=>{if(en.isIntersecting){setTimeout(()=>en.target.classList.add('visible'),i*55);obs.unobserve(en.target);}});},{threshold:.08});
 document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
 
-// Real audio players
-const realAudios = {};
-function toggleRealPlay(audioId, wvId, playerEl) {
-  const audio = document.getElementById(audioId);
-  if (!audio) return;
-  // Stop all other players
-  document.querySelectorAll('.real-player.playing').forEach(p => {
-    if (p !== playerEl) {
-      p.classList.remove('playing');
-      p.querySelector('.play-btn').innerHTML = '<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>';
-      // stop audio
-      const aid = p.getAttribute('onclick').match(/'([^']+)'/)[1];
-      const a = document.getElementById(aid);
-      if (a) { a.pause(); a.currentTime = 0; }
+// Real audio players with seek
+function getTimeEl(audioId){
+  return audioId==='real_poem' ? document.getElementById('time_bio') : document.getElementById('time_poem');
+}
+function fmtTime(s){
+  const m=Math.floor(s/60), sec=Math.floor(s%60).toString().padStart(2,'0');
+  return m+':'+sec;
+}
+function updateProgress(wvId, pct){
+  const wv=document.getElementById(wvId); if(!wv)return;
+  const bars=wv.querySelectorAll('.waveform-bar');
+  const n=bars.length;
+  bars.forEach((b,i)=>{
+    const bp=i/n;
+    if(bp<=pct){
+      b.classList.add('lit');
+      // slight animation near playhead
+      if(Math.abs(bp-pct)<0.06) b.style.height=(10+Math.random()*14)+'px';
+    } else {
+      b.classList.remove('lit');
     }
   });
-  if (audio.paused) {
-    // Also stop fake players
+}
+function resetWaveform(wvId){
+  const wv=document.getElementById(wvId); if(!wv)return;
+  wv.querySelectorAll('.waveform-bar').forEach(b=>{
+    b.classList.remove('lit');
+    b.style.height=(4+Math.random()*22)+'px';
+  });
+}
+function addSeekHandler(playerEl, audio, wvId){
+  const wrap=playerEl.querySelector('.waveform-wrap');
+  if(!wrap) return;
+  wrap.style.cursor='pointer';
+  wrap.style.userSelect='none';
+  // Remove old handler if any
+  if(wrap._seek){ wrap.removeEventListener('mousedown',wrap._seek); wrap.removeEventListener('touchstart',wrap._seek); }
+  function seek(e){
+    e.stopPropagation();
+    const rect=wrap.getBoundingClientRect();
+    const clientX=e.touches ? e.touches[0].clientX : e.clientX;
+    const pct=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width));
+    if(audio.duration){ audio.currentTime=pct*audio.duration; }
+  }
+  wrap._seek=seek;
+  wrap.addEventListener('mousedown',seek);
+  wrap.addEventListener('touchstart',seek,{passive:true});
+}
+function toggleRealPlay(audioId, wvId, playerEl) {
+  const audio=document.getElementById(audioId); if(!audio)return;
+  const timeEl=getTimeEl(audioId);
+  // Stop other real players
+  document.querySelectorAll('.real-player.playing').forEach(p=>{
+    if(p!==playerEl){
+      p.classList.remove('playing');
+      p.querySelector('.play-btn').innerHTML='<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>';
+      const aid=p.getAttribute('onclick').match(/'([^']+)'/)[1];
+      const a=document.getElementById(aid);
+      if(a){ a.pause(); }
+    }
+  });
+  if(audio.paused){
     if(currentPlayer){resetPlayer(currentPlayer);currentPlayer=null;}
     audio.play();
     playerEl.classList.add('playing');
-    playerEl.querySelector('.play-btn').innerHTML = '<svg viewBox="0 0 10 12"><rect x="0" y="0" width="3.5" height="12"/><rect x="6.5" y="0" width="3.5" height="12"/></svg>';
-    // Animate waveform
-    animBarsForEl(playerEl.querySelectorAll('.waveform-bar'));
-    // Track time
-    const timeEl = audioId === 'real_poem' ? document.getElementById('time_bio') : document.getElementById('time_poem');
-    audio.ontimeupdate = () => {
-      const m = Math.floor(audio.currentTime/60);
-      const s = Math.floor(audio.currentTime%60).toString().padStart(2,'0');
-      if(timeEl) timeEl.textContent = m+':'+s;
+    playerEl.querySelector('.play-btn').innerHTML='<svg viewBox="0 0 10 12"><rect x="0" y="0" width="3.5" height="12"/><rect x="6.5" y="0" width="3.5" height="12"/></svg>';
+    addSeekHandler(playerEl, audio, wvId);
+    audio.ontimeupdate=()=>{
+      const pct=audio.duration ? audio.currentTime/audio.duration : 0;
+      updateProgress(wvId, pct);
+      if(timeEl) timeEl.textContent=fmtTime(audio.currentTime)+(audio.duration?' / '+fmtTime(audio.duration):'');
     };
-    audio.onended = () => {
+    audio.onended=()=>{
       playerEl.classList.remove('playing');
-      playerEl.querySelector('.play-btn').innerHTML = '<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>';
-      if(timeEl) timeEl.textContent = '0:00';
-      if(animId){cancelAnimationFrame(animId);animId=null;}
-      playerEl.querySelectorAll('.waveform-bar').forEach(b=>{b.classList.remove('lit');b.style.height=(4+Math.random()*22)+'px';});
+      playerEl.querySelector('.play-btn').innerHTML='<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>';
+      if(timeEl) timeEl.textContent='0:00';
+      resetWaveform(wvId);
     };
   } else {
     audio.pause();
     playerEl.classList.remove('playing');
-    playerEl.querySelector('.play-btn').innerHTML = '<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>';
-    if(animId){cancelAnimationFrame(animId);animId=null;}
-    playerEl.querySelectorAll('.waveform-bar').forEach(b=>{b.classList.remove('lit');b.style.height=(4+Math.random()*22)+'px';});
+    playerEl.querySelector('.play-btn').innerHTML='<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>';
   }
 }
-function animBarsForEl(bars) {
+function animBarsForEl(bars){
   if(animId){cancelAnimationFrame(animId);animId=null;}
   let t=0;
   function f(){t++;if(t%3===0)bars.forEach(b=>{const on=Math.random()>.35;b.classList.toggle('lit',on);b.style.height=(on?10+Math.random()*16:3+Math.random()*7)+'px';});animId=requestAnimationFrame(f);}
