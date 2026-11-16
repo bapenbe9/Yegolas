@@ -2,6 +2,7 @@
 
 <html lang="be">
 <head>
+<meta name="build" content="2026-11-16-r6 baravikova-hata">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>Яе голас — Аудыябібліятэка беларускіх паэтэс</title>
@@ -245,6 +246,17 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 @media(max-width:768px){.creative-grid{grid-template-columns:1fr}}
 .btn-ghost[disabled]{opacity:.45;cursor:default;pointer-events:none}
 .player-time{min-width:6.4em;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+#playlistPause{font:inherit;border-radius:999px;cursor:pointer;padding:.65rem 1rem;background:transparent;color:var(--cream);border:1px solid rgba(212,170,74,.35)}
+#playlistPause[disabled]{opacity:.45;cursor:default}
+.pl-seekrow{flex:1 1 100%;display:flex;align-items:center;gap:.8rem}
+.pl-seek{position:relative;flex:1;height:34px;display:flex;align-items:center;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.pl-seek::before{content:'';position:absolute;left:0;right:0;height:6px;border-radius:3px;background:rgba(212,170,74,.25)}
+.pl-seek-fill{position:absolute;left:0;height:6px;border-radius:3px;background:var(--gold);width:0%;pointer-events:none}
+.pl-seek-fill::after{content:'';position:absolute;right:-6px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:var(--gold)}
+.pl-seek.idle{opacity:.4;cursor:default}
+.pl-time{font-size:.75rem;color:var(--muted);min-width:6.4em;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.track-row.is-playing{position:relative}
 </style>
 <style>
 .teacher-author-details{border:1px solid rgba(190,156,67,.24);border-radius:12px;padding:12px 16px;margin:14px 0;background:rgba(8,18,11,.28)}
@@ -714,7 +726,9 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="sec-body">
 <div class="playlist-controls">
 <button id="playlistPlayAll" type="button">▶ Слухаць разам</button>
+<button disabled="" id="playlistPause" type="button">⏸ Паўза</button>
 <button id="playlistStopAll" type="button">■ Спыніць</button>
+<div class="pl-seekrow"><div class="pl-seek idle" id="playlistSeek" aria-label="Перамотка"><div class="pl-seek-fill" id="playlistSeekFill"></div></div><span class="pl-time" id="playlistTime">0:00 / 0:00</span></div>
 <span aria-live="polite" id="playlistStatus" role="status">Запісы з’яўляюцца па меры гатоўнасці; трэкі без файла прапускаюцца.</span>
 </div>
 <div class="playlist-list" role="list">
@@ -1473,6 +1487,16 @@ document.getElementById('sheetModal').addEventListener('click',function(e){if(e.
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
 </script>
 <script>
+/* Хвалі: колькасць слупкоў залежыць ад шырыні, каб запаўняць усю паласу */
+(function(){
+const rnd=s=>{const x=Math.sin(s*12.9898)*43758.5453;return x-Math.floor(x);};
+function build(wf){
+  const w=wf.clientWidth;if(!w)return;const n=Math.max(20,Math.floor(w/6));if(wf.children.length===n)return;
+  wf.textContent='';const seed=[...wf.id].reduce((a,c)=>a+c.charCodeAt(0),0);
+  for(let k=0;k<n;k++){const b=document.createElement('div');b.className='waveform-bar';b.style.height=(4+rnd(seed+k)*22)+'px';wf.appendChild(b);}
+}
+document.querySelectorAll('.author-players .waveform').forEach(wf=>{build(wf);if(window.ResizeObserver)new ResizeObserver(()=>build(wf)).observe(wf);});
+})();
 /* Аўдыя: файлы audio/<ключ>-bio.m4a і audio/<ключ>-poem.m4a. Няма файла — паказваем «Хутка». */
 (function(){
 const PLAY='<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>',PAUSE='<svg viewBox="0 0 10 12"><rect x="0" y="0" width="3.5" height="12"/><rect x="6.5" y="0" width="3.5" height="12"/></svg>';
@@ -1518,29 +1542,52 @@ document.querySelectorAll('.author-players .player').forEach(el=>{
   wrap.addEventListener('pointerup',end);wrap.addEventListener('pointercancel',end);
 });
 })();
-/* Зборнік: прайграванне вершаў па чарзе */
+/* Зборнік: прайграванне вершаў па чарзе, паўза і перамотка */
 (function(){
 const rows=[...document.querySelectorAll('#playlist .playlist-track')];
-
-const status=document.getElementById('playlistStatus'),playAll=document.getElementById('playlistPlayAll'),stop=document.getElementById('playlistStopAll');
+const $=id=>document.getElementById(id);
+const status=$('playlistStatus'),playAll=$('playlistPlayAll'),stop=$('playlistStopAll'),pause=$('playlistPause'),seek=$('playlistSeek'),fill=$('playlistSeekFill'),time=$('playlistTime');
 if(!rows.length||!playAll||!stop)return;
-const A=new Audio();A.preload='none';let queue=[],i=0,on=false,bad=-1;
+const A=new Audio();A.preload='none';let queue=[],i=0,on=false,bad=-1,drag=false,pend=null;
 const label=r=>r.querySelector('.track-title').textContent.trim()+' — '+r.querySelector('.track-author').textContent.trim();
 const clear=()=>rows.forEach(r=>{r.classList.remove('is-playing');r.style.outline='';});
-function stopP(msg){on=false;queue=[];i=0;A.pause();clear();status.textContent=msg||'Прайграванне спынена.';}
-window.stopPlaylist=()=>{if(on||queue.length)stopP('Прайграванне спынена.');};
+const fmt=s=>fmtTime(isFinite(s)?s:0);
+function reset(){fill.style.width='0%';time.textContent='0:00 / 0:00';seek.classList.add('idle');pause.textContent='⏸ Паўза';pause.disabled=true;}
+function show(p){fill.style.width=(p*100)+'%';time.textContent=fmt(p*(A.duration||0))+' / '+fmt(A.duration||0);}
+function stopP(msg){on=false;queue=[];i=0;pend=null;drag=false;A.pause();clear();reset();status.textContent=msg||'Прайграванне спынена.';}
+window.stopPlaylist=()=>{if(on)stopP('Прайграванне спынена.');};
 function next(){
   if(!on)return;
-  if(i>=queue.length){on=false;clear();status.textContent='Прайграванне даступных запісаў завершана.';return;}
+  if(i>=queue.length){stopP('Прайграванне даступных запісаў завершана.');return;}
   const r=queue[i];clear();r.classList.add('is-playing');r.style.outline='1px solid var(--gold)';
+  fill.style.width='0%';time.textContent='0:00 / 0:00';seek.classList.remove('idle');pause.disabled=false;pause.textContent='⏸ Паўза';
   status.textContent='Слухаецца: '+label(r);A.src='audio/'+r.dataset.key+'-poem.m4a';A.play().catch(()=>fail(i));
 }
 function fail(idx){if(!on||bad===idx)return;bad=idx;status.textContent='Для «'+label(queue[idx])+'» запіс яшчэ не дададзены. Прапускаем.';i++;setTimeout(next,700);}
 function start(list){stopP();if(window.stopAuthorAudio)window.stopAuthorAudio();queue=list;i=0;bad=-1;on=true;next();}
+function togglePause(){
+  if(!on||seek.classList.contains('idle'))return;
+  if(A.paused){A.play().catch(()=>fail(i));pause.textContent='⏸ Паўза';status.textContent='Слухаецца: '+label(queue[i]);}
+  else{A.pause();pause.textContent='▶ Працягнуць';status.textContent='Паўза: '+label(queue[i]);}
+}
 A.addEventListener('ended',()=>{if(on){i++;next();}});
 A.addEventListener('error',()=>fail(i));
-playAll.addEventListener('click',()=>start(rows));stop.addEventListener('click',()=>stopP());
-rows.forEach(r=>{const run=()=>start([r]);r.addEventListener('click',run);r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();run();}});});
+A.addEventListener('loadedmetadata',()=>{if(pend!=null){A.currentTime=pend*A.duration;pend=null;}});
+A.addEventListener('timeupdate',()=>{if(!on||drag||!A.duration)return;show(A.currentTime/A.duration);});
+playAll.addEventListener('click',()=>start(rows));
+stop.addEventListener('click',()=>stopP());
+pause.addEventListener('click',togglePause);
+/* перамотка: клік або цягненне па ўсёй паласе */
+const pctOf=e=>{const r=seek.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));};
+function seekTo(p){if(!on||seek.classList.contains('idle'))return;if(A.duration){A.currentTime=p*A.duration;show(p);}else{pend=p;fill.style.width=(p*100)+'%';}}
+seek.addEventListener('pointerdown',e=>{if(e.button>0||!on||seek.classList.contains('idle'))return;drag=true;try{seek.setPointerCapture(e.pointerId);}catch(_){}seekTo(pctOf(e));});
+seek.addEventListener('pointermove',e=>{if(drag)seekTo(pctOf(e));});
+const end=()=>{drag=false;};seek.addEventListener('pointerup',end);seek.addEventListener('pointercancel',end);
+rows.forEach(r=>{
+  const run=()=>{if(on&&queue[i]===r&&!seek.classList.contains('idle'))togglePause();else start([r]);};
+  r.addEventListener('click',run);
+  r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();run();}});
+});
 })();
 </script>
 </body>
