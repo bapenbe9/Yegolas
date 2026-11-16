@@ -96,9 +96,9 @@ nav.scrolled{background:rgba(13,26,13,.95);backdrop-filter:blur(14px);border-bot
 .play-btn{width:32px;height:32px;min-width:32px;border-radius:50%;background:var(--gold);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
 .play-btn:hover{transform:scale(1.1)}
 .play-btn svg{width:10px;height:12px;fill:var(--bg);margin-left:2px}
-.waveform-wrap{flex:1}
-.waveform{display:flex;align-items:center;gap:2px;height:28px}
-.waveform-bar{width:3px;border-radius:2px;background:var(--green-hi);transition:height .1s,background .2s}
+.waveform-wrap{flex:1;min-width:0;display:flex;align-items:center;min-height:44px;cursor:pointer;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.waveform{display:flex;align-items:center;justify-content:space-between;width:100%;height:28px;pointer-events:none}
+.waveform-bar{flex:0 0 3px;width:3px;border-radius:2px;background:var(--green-hi);transition:height .1s,background .2s}
 .player:hover .waveform-bar{background:rgba(212,170,74,.4)}
 .waveform-bar.lit{background:var(--gold)!important}
 .player-time{font-size:.7rem;color:var(--muted);white-space:nowrap}
@@ -244,6 +244,7 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 .creative-card p{font-size:.76rem;color:var(--cream-dim);line-height:1.6;margin:0}
 @media(max-width:768px){.creative-grid{grid-template-columns:1fr}}
 .btn-ghost[disabled]{opacity:.45;cursor:default;pointer-events:none}
+.player-time{min-width:6.4em;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 </style>
 <style>
 .teacher-author-details{border:1px solid rgba(190,156,67,.24);border-radius:12px;padding:12px 16px;margin:14px 0;background:rgba(8,18,11,.28)}
@@ -525,39 +526,15 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="author-players">
 <div class="player" onclick="playTrack(this,'baravikova','bio')">
 <div class="player-type"><svg fill="none" height="10" viewbox="0 0 10 10" width="10"><circle cx="5" cy="5" r="4" stroke="#8a7f68" stroke-width="1"></circle><path d="M5 3V5L6.5 6" stroke="#8a7f68" stroke-linecap="round" stroke-width="1"></path></svg>Яе жыццё · біяграфічны трэк</div>
-<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvb8"></div></div><span class="player-time">3:45</span></div>
+<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvb8"></div></div><span class="player-time">1:53</span></div>
 </div>
 <div class="player" onclick="playTrack(this,'baravikova','poem')">
-<div class="player-type"><svg fill="none" height="10" viewbox="0 0 10 10" width="10"><path d="M2 8 C2 5 5 2 8 2" stroke="#8a7f68" stroke-linecap="round" stroke-width="1"></path><circle cx="2" cy="8" fill="#8a7f68" r="1.5"></circle></svg>Яе слова · «Я — дзяўчынка на шары»</div>
-<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvp8"></div></div><span class="player-time">1:55</span></div>
+<div class="player-type"><svg fill="none" height="10" viewbox="0 0 10 10" width="10"><path d="M2 8 C2 5 5 2 8 2" stroke="#8a7f68" stroke-linecap="round" stroke-width="1"></path><circle cx="2" cy="8" fill="#8a7f68" r="1.5"></circle></svg>Яе слова · «Мне сёння прыснілася хата...»</div>
+<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvp8"></div></div><span class="player-time">1:02</span></div>
 </div>
 </div>
 </div>
-<div class="author-poem-box"><div class="poem-label">Яе слова</div><div class="poem-title-h">«Я — дзяўчынка на шары»</div><div class="poem-year">1967</div><div class="poem-text-block">Я — дзяўчынка на шары,<br/>
-          што плыве у блакіце!<br/>
-          І палаюць Стажары<br/>
-          нада мною ў зеніце,<br/>
-          і нікому не ў цяжкасць,<br/>
-          я — нібыта пушынка,<br/>
-          што трапляе ў бязважкасць,<br/>
-          я — на шары дзяўчынка!<br/>
-          Шар вялікі, бязмежны<br/>
-          У здзіўленні я кратаю,<br/>
-          быццам Белыя Вежы,<br/>
-          быццам чорныя кратэры,<br/>
-          горы ззяюць снягамі<br/>
-          і дымяцца абшары<br/>
-          у мяне пад нагамі.<br/>
-          Я — дзяўчынка на шары!<br/><br/>
-          Заручуся з бясстрашшам<br/>
-          у густой сіняве,<br/>
-          страціць як раўнаважжа,<br/>
-          калі шар не дае?!<br/>
-          Ім адзіным сагрэта,<br/>
-          не ўпаду, і не дзіва!<br/>
-          Пада мною планета,<br/>
-          Што мяне нарадзіла.<br/><br/>
-          Я ж — дзяўчынка на шары!</div></div>
+<div class="author-poem-box"><div class="poem-label">Яе слова</div><div class="poem-title-h">«Мне сёння прыснілася хата...»</div><div class="poem-year">1974</div><div class="poem-text-block">Мне сёння прыснілася хата...<br/> У ёй мы калісьці жылі!<br/> Вясною там бэзу багата,<br/> Звіняць над лугамі чмялі.<br/> Праз сон я ў маленства глядзела,<br/> Ў туманны, сівы вербалоз,<br/> Я зноў святкавала нядзелю<br/> Ў зацішку знаёмых бяроз!<br/> Шумелі за хатаю сосны,<br/> І стукалі промні ў акно,<br/> Малою на ўзмежачак росны<br/> Спяшалася слаць палатно.<br/> За вокнамі стукалі колы,<br/> Зарою палаў далягляд,<br/> І плакала я, бо ніколі<br/> Туды не вярнуся назад.</div></div>
 </div>
 <div class="author-panel reveal" id="a9">
 <div class="author-info">
@@ -717,11 +694,11 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="author-players">
 <div class="player" onclick="playTrack(this,'taras','bio')">
 <div class="player-type"><svg fill="none" height="10" viewbox="0 0 10 10" width="10"><circle cx="5" cy="5" r="4" stroke="#8a7f68" stroke-width="1"></circle><path d="M5 3V5L6.5 6" stroke="#8a7f68" stroke-linecap="round" stroke-width="1"></path></svg>Яе жыццё · біяграфічны трэк</div>
-<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvb14"></div></div><span class="player-time">—</span></div>
+<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvb14"></div></div><span class="player-time">4:19</span></div>
 </div>
 <div class="player" onclick="playTrack(this,'taras','poem')">
 <div class="player-type"><svg fill="none" height="10" viewbox="0 0 10 10" width="10"><path d="M2 8 C2 5 5 2 8 2" stroke="#8a7f68" stroke-linecap="round" stroke-width="1"></path><circle cx="2" cy="8" fill="#8a7f68" r="1.5"></circle></svg>Яе слова · «На ўсход ідучы»</div>
-<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvp14"></div></div><span class="player-time">—</span></div>
+<div class="player-row"><button class="play-btn" tabindex="-1"><svg viewbox="0 0 10 12"><polygon points="0,0 10,6 0,12"></polygon></svg></button><div class="waveform-wrap"><div class="waveform" id="wvp14"></div></div><span class="player-time">1:24</span></div>
 </div>
 </div>
 </div>
@@ -789,10 +766,10 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <span class="track-tag">Мова</span>
 <span class="track-dur">—</span>
 </div>
-<div aria-label="Я — дзяўчынка на шары — Раіса Баравікова" class="track-row playlist-track" data-track-index="8" data-key="baravikova" role="button" tabindex="0">
+<div aria-label="Мне сёння прыснілася хата... — Раіса Баравікова" class="track-row playlist-track" data-track-index="8" data-key="baravikova" role="button" tabindex="0">
 <span class="track-num">09</span>
-<div class="track-main"><div class="track-title">Я — дзяўчынка на шары</div><div class="track-author">Раіса Баравікова</div></div>
-<span class="track-tag">Шлях</span>
+<div class="track-main"><div class="track-title">Мне сёння прыснілася хата...</div><div class="track-author">Раіса Баравікова</div></div>
+<span class="track-tag">Памяць</span>
 <span class="track-dur">—</span>
 </div>
 <div aria-label="Роднае слова — Данута Бічэль-Загнетава" class="track-row playlist-track" data-track-index="9" data-key="bichel" role="button" tabindex="0">
@@ -824,7 +801,7 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="method-tab" onclick="switchMethod('m7',this)">Ніна Тарас · «На ўсход ідучы»</div>
 <div class="method-tab" onclick="switchMethod('m8',this)">Ніна Мацяш · «І прыйдзе ноч, і ноч міне...»</div>
 <div class="method-tab" onclick="switchMethod('m9',this)">Яўгенія Янішчыц · «Мова»</div>
-<div class="method-tab" onclick="switchMethod('m10',this)">Раіса Баравікова · «Я — дзяўчынка на шары»</div>
+<div class="method-tab" onclick="switchMethod('m10',this)">Раіса Баравікова · «Мне сёння прыснілася хата...»</div>
 <div class="method-tab" onclick="switchMethod('m11',this)">Данута Бічэль-Загнетава · «Роднае слова»</div>
 <div class="method-tab" onclick="switchMethod('m12',this)">Людміла Рублеўская · «Шляхта»</div>
 </div>
@@ -1149,7 +1126,7 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="mcard">
 <div class="mcard-header">
 <div class="method-avatar"><img alt="Раіса Баравікова" src="img/baravikova.jpg"/></div>
-<div class="mcard-meta"><h3>Раіса Баравікова · «Я — дзяўчынка на шары»</h3><p>Метадычная картка № 10 · Беларуская літаратура · 8–9 клас · 45 хвілін</p></div>
+<div class="mcard-meta"><h3>Раіса Баравікова · «Мне сёння прыснілася хата...»</h3><p>Метадычная картка № 10 · Беларуская літаратура · 8–9 клас · 45 хвілін</p></div>
 </div>
 <div class="mcard-body">
 <div class="mcard-section"><div class="mcard-section-title">Агульная інфармацыя</div>
@@ -1162,32 +1139,11 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="info-block"><div class="info-block-label">Форма работы</div><div class="info-block-val">Індывід. + групавая</div></div>
 </div></div>
 <div class="mcard-section"><div class="mcard-section-title">Ход урока</div>
-<div class="lesson-steps">
-<div class="step"><div class="step-time">0–5 хв.</div><div class="step-content"><div class="step-title">Уваходны момант <span class="step-tag">Матывацыя</span></div><div class="step-desc">«Што значыць быць лёгкім, як пушынка?»</div></div></div>
-<div class="step"><div class="step-time">5–12 хв.</div><div class="step-content"><div class="step-title">Біяграфія <span class="step-tag">Аўдыё А</span></div><div class="step-desc">Пешкі, Літінстытут (1971), «Рамонкавы бераг», «Маладосць».</div></div></div>
-<div class="step"><div class="step-time">12–20 хв.</div><div class="step-content"><div class="step-title">Першае слуханне <span class="step-tag">Аўдыё Б</span></div><div class="step-desc">слова-асацыяцыя.</div></div></div>
-<div class="step"><div class="step-time">20–28 хв.</div><div class="step-content"><div class="step-title">Другое слуханне <span class="step-tag">Аўдыё Б</span></div><div class="step-desc">падкрэсліць касмічныя і зямныя вобразы.</div></div></div>
-<div class="step"><div class="step-time">28–38 хв.</div><div class="step-content"><div class="step-title">Абмеркаванне <span class="step-tag">Дыялог</span></div><div class="step-desc">міф і эпоха 1960-х.</div></div></div>
-<div class="step"><div class="step-time">38–45 хв.</div><div class="step-content"><div class="step-title">Творчае заданне + рэфлексія <span class="step-tag">Практыка</span></div><div class="step-desc">Вобраз «Я — на шары». Рэфлексія.</div></div></div>
-</div></div>
-<div class="mcard-section"><div class="mcard-section-title">Пытанні для абмеркавання</div>
-<div class="q-list">
-<div class="q-item"><span class="q-level">Веданне</span><span class="q-text">Якія прэміі атрымала Баравікова?</span></div>
-<div class="q-item"><span class="q-level">Разуменне</span><span class="q-text">Што азначае вобраз «дзяўчынкі на шары»?</span></div>
-<div class="q-item"><span class="q-level">Прымяненне</span><span class="q-text">Знайдзіце астранамічныя і прыродныя вобразы.</span></div>
-<div class="q-item"><span class="q-level">Аналіз</span><span class="q-text">Як звязаны бязважкасць і адчуванне радзімы-планеты?</span></div>
-<div class="q-item"><span class="q-level">Сінтэз</span><span class="q-text">Напішыце сучасны варыянт верша.</span></div>
-<div class="q-item"><span class="q-level">Ацэнка</span><span class="q-text">Што ў вершы можна лічыць галоўным?</span></div>
-</div></div>
-<div class="mcard-section"><div class="mcard-section-title">Творчыя заданні</div>
-<div class="creative-grid"><div class="creative-card"><h4>🎈 Шар як сцэна</h4><p>Намалюйце шар, на якім знаходзіцца лірычная гераіня. Дадайце 3 дэталі, якія перадаюць яе настрой, і растлумачце іх.</p></div><div class="creative-card"><h4>🎭 Маналог дзяўчынкі</h4><p>Напішыце маналог ад імя дзяўчынкі на шары: 6–8 сказаў пра тое, што яна бачыць і адчувае.</p></div><div class="creative-card"><h4>🧭 Падарожжа ўверх</h4><p>Складзіце маршрут з 4 пунктаў: ад зямлі да шара і назад. Кожны пункт звяжыце з вобразам або думкай верша.</p></div><div class="creative-card"><h4>🎨 Паштоўка з вышыні</h4><p>Стварыце паштоўку з вышыні шара. Выберыце адзін радок, які стане подпісам, і растлумачце выбар.</p></div><div class="creative-card"><h4>✏️ Ліст Раісе Баравіковай</h4><p>Напішыце кароткі ліст або паведамленне аўтарцы: выкажыце ўражанне, прывядзіце радок і сфармулюйце пытанне.</p></div><div class="creative-card"><h4>🔍 Касмічная эра 1960-х</h4><p>Выканайце заданне, абапіраючыся на верш: выберыце ключавы вобраз або радок і растлумачце, як ён раскрывае настрой і асноўную думку.</p></div><div class="creative-card"><h4>🎨 Ілюстрацыя</h4><p>Стварыце малюнак або калаж паводле верша і дадайце радок-тлумачэнне сваёй задумкі.</p></div></div>
-
-
-
-</div></div>
-<div class="qr-row">
+<div class="lesson-steps"> <div class="step"><div class="step-time">0–5 хв.</div><div class="step-content"><div class="step-title">Уваходны момант <span class="step-tag">Матывацыя</span></div><div class="step-desc">«Чаму нам часта сняцца месцы, дзе мы выраслі?»</div></div></div> <div class="step"><div class="step-time">5–12 хв.</div><div class="step-content"><div class="step-title">Біяграфія <span class="step-tag">Аўдыё А</span></div><div class="step-desc">Пешкі, Літінстытут (1971), «Рамонкавы бераг», «Маладосць».</div></div></div> <div class="step"><div class="step-time">12–20 хв.</div><div class="step-content"><div class="step-title">Першае слуханне <span class="step-tag">Аўдыё Б</span></div><div class="step-desc">слова-асацыяцыя; што «прыснілася» гераіні.</div></div></div> <div class="step"><div class="step-time">20–28 хв.</div><div class="step-content"><div class="step-title">Другое слуханне <span class="step-tag">Аўдыё Б</span></div><div class="step-desc">падкрэсліць вобразы прыроды і дэталі вясковага побыту.</div></div></div> <div class="step"><div class="step-time">28–38 хв.</div><div class="step-content"><div class="step-title">Абмеркаванне <span class="step-tag">Дыялог</span></div><div class="step-desc">сон і рэальнасць; чаму гераіня плача ў фінале.</div></div></div> <div class="step"><div class="step-time">38–45 хв.</div><div class="step-content"><div class="step-title">Творчае заданне + рэфлексія <span class="step-tag">Практыка</span></div><div class="step-desc">«Мне сёння прыснілася…» — 4–5 радкоў. Рэфлексія.</div></div></div> </div></div> <div class="mcard-section"><div class="mcard-section-title">Пытанні для абмеркавання</div>
+<div class="q-list"> <div class="q-item"><span class="q-level">Веданне</span><span class="q-text">Што прыснілася лірычнай гераіні?</span></div> <div class="q-item"><span class="q-level">Разуменне</span><span class="q-text">Чаму ў фінале гераіня плача?</span></div> <div class="q-item"><span class="q-level">Прымяненне</span><span class="q-text">Знайдзіце вобразы прыроды і дэталі вясковага жыцця.</span></div> <div class="q-item"><span class="q-level">Аналіз</span><span class="q-text">Як звязаны сон, дзяцінства і незваротнасць часу?</span></div> <div class="q-item"><span class="q-level">Сінтэз</span><span class="q-text">Напішыце свой «сон пра родную хату».</span></div> <div class="q-item"><span class="q-level">Ацэнка</span><span class="q-text">Што ў вершы можна лічыць галоўным?</span></div> </div></div> <div class="mcard-section"><div class="mcard-section-title">Творчыя заданні</div>
+<div class="creative-grid"><div class="creative-card"><h4>🏡 Хата ў сне</h4><p>Намалюйце хату з верша такой, якой яна бачыцца ў сне. Дадайце 3 дэталі з тэксту і растлумачце іх.</p></div><div class="creative-card"><h4>🎙 Чытанне са смуткам</h4><p>Прачытайце верш, перадаючы пераход ад светлага ўспаміну да шкадавання ў фінале. Пазначце паўзы.</p></div><div class="creative-card"><h4>🌿 Вобразы роднага кута</h4><p>Стварыце калаж з бэзу, лугоў, бяроз, сосен і росы; да кожнага вобраза падбярыце радок з верша.</p></div><div class="creative-card"><h4>💌 Ліст у хату</h4><p>Напішыце кароткі ліст ад імя гераіні роднай хаце (4–5 сказаў).</p></div><div class="creative-card"><h4>✏️ Ліст Раісе Баравіковай</h4><p>Напішыце кароткі ліст або паведамленне аўтарцы: выкажыце ўражанне, прывядзіце радок і сфармулюйце пытанне.</p></div></div></div></div> <div class="qr-row">
 <div class="qr-badge"><div class="qr-sq"><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div></div>QR → Яе жыццё</div>
-<div class="qr-badge"><div class="qr-sq"><div class="qr-d"></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div class="qr-d"></div></div>QR → Я — дзяўчынка на шары</div>
+<div class="qr-badge"><div class="qr-sq"><div class="qr-d"></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div></div><div class="qr-d"></div><div class="qr-d"></div></div>QR → Мне сёння прыснілася хата...</div>
 </div>
 </div>
 </div>
@@ -1317,7 +1273,7 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="teacher-author-item"><strong>Еўгенія Янішчыц</strong><span>«Мова»</span><button class="btn-ghost" data-author="Еўгенія Янішчыц" data-material="lesson" data-key="yanishchyts" type="button">План урока</button></div>
 <div class="teacher-author-item"><strong>Ніна Мацяш</strong><span>«І прыйдзе ноч, і ноч міне...»</span><button class="btn-ghost" data-author="Ніна Мацяш" data-material="lesson" data-key="matsyash" type="button">План урока</button></div>
 <div class="teacher-author-item"><strong>Данута Бічэль</strong><span>«Роднае слова»</span><button class="btn-ghost" data-author="Данута Бічэль" data-material="lesson" data-key="bichel" type="button">План урока</button></div>
-<div class="teacher-author-item"><strong>Раіса Баравікова</strong><span>«Я — дзяўчынка на шары»</span><button class="btn-ghost" data-author="Раіса Баравікова" data-material="lesson" data-key="baravikova" type="button">План урока</button></div>
+<div class="teacher-author-item"><strong>Раіса Баравікова</strong><span>«Мне сёння прыснілася хата...»</span><button class="btn-ghost" data-author="Раіса Баравікова" data-material="lesson" data-key="baravikova" type="button">План урока</button></div>
 <div class="teacher-author-item"><strong>Людміла Рублеўская</strong><span>«Шляхта»</span><button class="btn-ghost" data-author="Людміла Рублеўская" data-material="lesson" data-key="rubleuskaya" type="button">План урока</button></div>
 <div class="teacher-author-item"><strong>Яўгенія Пфляўмбаўм</strong><span>«Я маладая...»</span><button class="btn-ghost" data-author="Яўгенія Пфляўмбаўм" data-material="lesson" data-key="pflaumbaum" type="button">План урока</button></div>
 <div class="teacher-author-item"><strong>Ядвіга Бяганская</strong><span>«Ноч»</span><button class="btn-ghost" data-author="Ядвіга Бяганская" data-material="lesson" data-key="byaganskaya" type="button">План урока</button></div>
@@ -1332,7 +1288,7 @@ footer{background:#060d06;border-top:1px solid rgba(212,170,74,.12);padding:2rem
 <div class="teacher-author-item"><strong>Еўгенія Янішчыц</strong><span>«Мова»</span><button class="btn-ghost" data-author="Еўгенія Янішчыц" data-material="worksheet" data-sheet="yanishchyts" type="button">Рабочы ліст</button></div>
 <div class="teacher-author-item"><strong>Ніна Мацяш</strong><span>«І прыйдзе ноч, і ноч міне...»</span><button class="btn-ghost" data-author="Ніна Мацяш" data-material="worksheet" data-sheet="matsyash" type="button">Рабочы ліст</button></div>
 <div class="teacher-author-item"><strong>Данута Бічэль</strong><span>«Роднае слова»</span><button class="btn-ghost" data-author="Данута Бічэль" data-material="worksheet" data-sheet="bichel" type="button">Рабочы ліст</button></div>
-<div class="teacher-author-item"><strong>Раіса Баравікова</strong><span>«Я — дзяўчынка на шары»</span><button class="btn-ghost" data-author="Раіса Баравікова" data-material="worksheet" type="button" disabled>Хутка</button></div>
+<div class="teacher-author-item"><strong>Раіса Баравікова</strong><span>«Мне сёння прыснілася хата...»</span><button class="btn-ghost" data-author="Раіса Баравікова" data-material="worksheet" type="button" disabled>Хутка</button></div>
 <div class="teacher-author-item"><strong>Людміла Рублеўская</strong><span>«Шляхта»</span><button class="btn-ghost" data-author="Людміла Рублеўская" data-material="worksheet" data-sheet="rubleuskaya" type="button">Рабочы ліст</button></div>
 <div class="teacher-author-item"><strong>Яўгенія Пфляўмбаўм</strong><span>«Я маладая...»</span><button class="btn-ghost" data-author="Яўгенія Пфляўмбаўм" data-material="worksheet" data-sheet="pflaumbaum" type="button">Рабочы ліст</button></div>
 <div class="teacher-author-item"><strong>Ядвіга Бяганская</strong><span>«Ноч»</span><button class="btn-ghost" data-author="Ядвіга Бяганская" data-material="worksheet" data-sheet="byaganskaya" type="button">Рабочы ліст</button></div>
@@ -1520,26 +1476,47 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet()
 /* Аўдыя: файлы audio/<ключ>-bio.m4a і audio/<ключ>-poem.m4a. Няма файла — паказваем «Хутка». */
 (function(){
 const PLAY='<svg viewBox="0 0 10 12"><polygon points="0,0 10,6 0,12"/></svg>',PAUSE='<svg viewBox="0 0 10 12"><rect x="0" y="0" width="3.5" height="12"/><rect x="6.5" y="0" width="3.5" height="12"/></svg>';
-const A=new Audio();A.preload='none';let cur=null;
+const A=new Audio();A.preload='none';let cur=null,drag=null;
 function ui(c,on){c.el.classList.toggle('playing',on);c.el.querySelector('.play-btn').innerHTML=on?PAUSE:PLAY;}
-function stopCur(){if(!cur)return;A.pause();ui(cur,false);resetWaveform(cur.wv);cur.t.textContent='0:00';cur=null;}
+function stopCur(){if(!cur)return;A.pause();ui(cur,false);resetWaveform(cur.wv);cur.t.textContent=cur.t.dataset.idle||'0:00';cur=null;drag=null;}
 window.stopAuthorAudio=stopCur;
-window.playTrack=function(el,key,kind){
-  if(cur&&cur.el===el){stopCur();return;}
+function label(p){return fmtTime(p*A.duration)+' / '+fmtTime(A.duration);}
+function begin(el,key,kind,pct){
   stopCur();if(window.stopPlaylist)window.stopPlaylist();
   if(typeof currentPlayer!=='undefined'&&currentPlayer){resetPlayer(currentPlayer);currentPlayer=null;}
-  const wv=el.querySelector('.waveform').id,t=el.querySelector('.player-time');
-  cur={el,wv,t};ui(cur,true);t.textContent='…';
-  const wrap=el.querySelector('.waveform-wrap');
-  if(wrap&&!wrap._stop){wrap._stop=1;wrap.addEventListener('click',e=>e.stopPropagation());}
-  addSeekHandler(el,A,wv);
-  A.src='audio/'+key+'-'+kind+'.m4a';
-  A.play().catch(fail);
+  const t=el.querySelector('.player-time');if(!t.dataset.idle)t.dataset.idle=t.textContent;
+  cur={el,wv:el.querySelector('.waveform').id,t,pending:pct};ui(cur,true);t.textContent='…';
+  A.src='audio/'+key+'-'+kind+'.m4a';A.play().catch(fail);
+}
+window.playTrack=function(el,key,kind){
+  if(cur&&cur.el===el){if(A.paused){A.play().catch(fail);ui(cur,true);}else{A.pause();ui(cur,false);}return;}
+  begin(el,key,kind,null);
 };
-function fail(){if(!cur)return;const c=cur;cur=null;A.pause();ui(c,false);resetWaveform(c.wv);c.t.textContent='Хутка';c.el.title='Запіс рыхтуецца';}
+function seekTo(p){
+  if(!cur)return;updateProgress(cur.wv,p);
+  if(A.duration){A.currentTime=p*A.duration;cur.t.textContent=label(p);}else cur.pending=p;
+}
+function fail(){if(!cur)return;const c=cur;cur=null;drag=null;A.pause();ui(c,false);resetWaveform(c.wv);c.t.textContent='Хутка';c.el.title='Запіс рыхтуецца';}
 A.addEventListener('error',fail);
-A.addEventListener('timeupdate',()=>{if(!cur)return;const p=A.duration?A.currentTime/A.duration:0;updateProgress(cur.wv,p);cur.t.textContent=fmtTime(A.currentTime)+(A.duration?' / '+fmtTime(A.duration):'');});
+A.addEventListener('loadedmetadata',()=>{if(cur&&cur.pending!=null){A.currentTime=cur.pending*A.duration;cur.pending=null;}});
+A.addEventListener('timeupdate',()=>{if(!cur||drag)return;const p=A.duration?A.currentTime/A.duration:0;updateProgress(cur.wv,p);cur.t.textContent=fmtTime(A.currentTime)+(A.duration?' / '+fmtTime(A.duration):'');});
 A.addEventListener('ended',stopCur);
+/* перамотка: клік або цягненне па ўсёй паласе */
+const pctOf=(w,e)=>{const r=w.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));};
+document.querySelectorAll('.author-players .player').forEach(el=>{
+  const wrap=el.querySelector('.waveform-wrap'),m=(el.getAttribute('onclick')||'').match(/playTrack\(this,'([^']+)','([^']+)'\)/);
+  if(!wrap||!m)return;
+  wrap.addEventListener('click',e=>e.stopPropagation());
+  wrap.addEventListener('pointerdown',e=>{
+    if(e.button>0)return;e.stopPropagation();const p=pctOf(wrap,e);
+    if(cur&&cur.el===el)seekTo(p);else begin(el,m[1],m[2],p);
+    drag=wrap;try{wrap.setPointerCapture(e.pointerId);}catch(_){}
+    updateProgress(el.querySelector('.waveform').id,p);
+  });
+  wrap.addEventListener('pointermove',e=>{if(drag===wrap)seekTo(pctOf(wrap,e));});
+  const end=()=>{if(drag===wrap)drag=null;};
+  wrap.addEventListener('pointerup',end);wrap.addEventListener('pointercancel',end);
+});
 })();
 /* Зборнік: прайграванне вершаў па чарзе */
 (function(){
